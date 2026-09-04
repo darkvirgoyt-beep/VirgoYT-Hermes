@@ -1,18 +1,11 @@
-## AI Agent Compatibility
+# VirgoYT Hermes
 
-VirgoYT-Hermes skills use a portable Agent Skills format.
+Custom Hermes AI Agent configuration with personal skills, tools, and setup.
 
-Supported agents:
+## Run on Termux
 
-- Hermes Agent
-- Claude Code
-- OpenCode
-- Other AI agents that support Agent Skills format
-
-## Skill Installation
-
-Clone the repository:
+### 1. Install Termux dependencies
 
 ```bash
-git clone https://github.com/darkvirgoyt-beep/VirgoYT-Hermes.git
-cd VirgoYT-Hermes
+pkg update && pkg upgrade -y
+pkg install proot-distro git python nodejs -y
