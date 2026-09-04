@@ -60,3 +60,21 @@ chmod +x install.sh
 
 ./install.sh
   hermes
+```
+
+## Importing into Manus Skills
+
+The repository root now contains a top-level `SKILL.md`, so use this URL to import the complete bundle:
+
+```text
+https://github.com/darkvirgoyt-beep/VirgoYT-Hermes
+```
+
+To import one skill directly, use its folder URL, which must contain that skill’s own `SKILL.md`:
+
+```text
+https://github.com/darkvirgoyt-beep/VirgoYT-Hermes/tree/main/skills/cloud-computer
+https://github.com/darkvirgoyt-beep/VirgoYT-Hermes/tree/main/skills/manus-compat
+```
+
+The previous error occurred because the repository had no root-level `SKILL.md`. The root manifest fixes that error. Private Manus runtime instructions are not copied into the repository; `manus-compat` provides portable capability mapping instead.
