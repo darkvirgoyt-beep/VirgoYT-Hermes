@@ -49,3 +49,4 @@ cd VirgoYT-Hermes
 chmod +x install.sh
 
 ./install.sh
+hermes
