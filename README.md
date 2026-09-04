@@ -43,7 +43,13 @@ Install requirements:
 pkg update && pkg upgrade -y
 ```
 ```bash
+pkg install git python nodejs proot-distro -y
+proot-distro install ubuntu
 proot-distro login ubuntu
+```
+```bash
+apt update && apt upgrade -y
+apt install git python3 python3-pip nodejs npm nano -y
 ```
 ```bash
 git clone https://github.com/darkvirgoyt-beep/VirgoYT-Hermes.git
