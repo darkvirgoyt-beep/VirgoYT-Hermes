@@ -41,9 +41,11 @@ Install requirements:
 
 ```bash
 pkg update && pkg upgrade -y
-
+```
+```bash
 proot-distro login ubuntu
-
+```
+```bash
 git clone https://github.com/darkvirgoyt-beep/VirgoYT-Hermes.git
 
 cd VirgoYT-Hermes
