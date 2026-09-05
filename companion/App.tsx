@@ -16,6 +16,7 @@ type BridgeStatus = {
   error?: string;
 };
 type Connector = { id: string; name: string; baseUrl: string; authType: string; headerName?: string; healthPath?: string; updatedAt?: string };
+type ModelProfile = { id: string; name: string; provider: string; model: string; free?: boolean; note?: string };
 
 const STORAGE_URL = 'hermes.bridgeUrl';
 const STORAGE_TOKEN = 'hermes.sessionToken';
@@ -33,6 +34,9 @@ export default function App() {
   const [connectorHeader, setConnectorHeader] = useState('X-Api-Key');
   const [connectorSecret, setConnectorSecret] = useState('');
   const [connectorHealth, setConnectorHealth] = useState('/');
+  const [models, setModels] = useState<ModelProfile[]>([]);
+  const [activeModel, setActiveModel] = useState('ollama-local');
+  const [confirmSensitive, setConfirmSensitive] = useState(true);
 
   useEffect(() => {
     (async () => {
@@ -87,6 +91,9 @@ export default function App() {
     setConnectorSecret('');
   };
   const testConnector = async (id: string) => { await control('/connectors/test', { id }, 'Connector health check passed.'); };
+  const loadModels = async () => { try { const body = await request('/models'); setModels(body.models || []); setActiveModel(body.activeModel || 'ollama-local'); setMessage('OpenCode-compatible models loaded.'); } catch (error) { setMessage(error instanceof Error ? error.message : 'Unable to load models'); } };
+  const selectModel = async (id: string) => { await control('/models/select', { id }, 'Active model changed.'); setActiveModel(id); };
+  const saveAdvancedSettings = async () => { await control('/settings', { confirmSensitiveActions: confirmSensitive, notifications: true, requestTimeoutMs: 10000 }, 'Advanced settings saved.'); };
 
   const emergencyStop = () => Alert.alert('Emergency stop', 'Revoke the computer session now?', [
     { text: 'Cancel', style: 'cancel' },
@@ -140,7 +147,14 @@ export default function App() {
       {connectorAuth !== 'none' && <TextInput value={connectorSecret} onChangeText={setConnectorSecret} secureTextEntry style={styles.input} placeholder="API secret" placeholderTextColor="#68758a" />}
       <TextInput value={connectorHealth} onChangeText={setConnectorHealth} autoCapitalize="none" style={styles.input} placeholder="Health path, e.g. /me" placeholderTextColor="#68758a" />
       <Pressable style={styles.primary} onPress={saveConnector} disabled={busy}><Text style={styles.primaryText}>SAVE CONNECTOR</Text></Pressable>
-      {(status?.connectors || []).map(connector => <View style={styles.connectorRow} key={connector.id}><View style={styles.connectorInfo}><Text style={styles.connectorName}>{connector.name}</Text><Text style={styles.connectorUrl}>{connector.baseUrl} · {connector.authType}</Text></View><Pressable style={styles.smallButton} onPress={() => testConnector(connector.id)}><Text style={styles.secondaryText}>TEST</Text></Pressable></View>)}
+    {(status?.connectors || []).map(connector => <View style={styles.connectorRow} key={connector.id}><View style={styles.connectorInfo}><Text style={styles.connectorName}>{connector.name}</Text><Text style={styles.connectorUrl}>{connector.baseUrl} · {connector.authType}</Text></View><Pressable style={styles.smallButton} onPress={() => testConnector(connector.id)}><Text style={styles.secondaryText}>TEST</Text></Pressable></View>)}
+    </View>
+    <View style={styles.card}>
+      <View style={styles.row}><Text style={styles.section}>OPENCODE MODELS & SETTINGS</Text><Pressable onPress={loadModels}><Text style={styles.link}>LOAD</Text></Pressable></View>
+      <Text style={styles.hint}>OpenCode-compatible local providers are pre-installed as profiles. Free means local software only; model downloads and cloud provider keys are separate.</Text>
+      {models.map(model => <Pressable key={model.id} onPress={() => selectModel(model.id)} style={[styles.modelRow, activeModel === model.id && styles.modelSelected]}><View style={styles.connectorInfo}><Text style={styles.connectorName}>{model.name} {model.free ? '· FREE LOCAL' : ''}</Text><Text style={styles.connectorUrl}>{model.provider}/{model.model}</Text></View><Text style={styles.link}>{activeModel === model.id ? 'ACTIVE' : 'USE'}</Text></Pressable>)}
+      <Pressable style={styles.secondary} onPress={() => setConfirmSensitive(!confirmSensitive)}><Text style={styles.secondaryText}>SENSITIVE ACTION CONFIRMATION: {confirmSensitive ? 'ON' : 'OFF'}</Text></Pressable>
+      <Pressable style={styles.primary} onPress={saveAdvancedSettings}><Text style={styles.primaryText}>SAVE ADVANCED SETTINGS</Text></Pressable>
     </View>
     <Text style={styles.footer}>No arbitrary shell commands. Pairing expires after ten minutes. Screen streaming and keyboard/mouse control remain disabled until native adapters are installed.</Text>
   </ScrollView></SafeAreaView>;
@@ -179,5 +193,7 @@ const styles = StyleSheet.create({
   connectorName: { color: '#f5f7fb', fontWeight: '800' },
   connectorUrl: { color: '#7789a1', fontSize: 11, marginTop: 3 },
   smallButton: { backgroundColor: '#1b2c43', borderRadius: 8, paddingVertical: 10, paddingHorizontal: 12 },
+  modelRow: { flexDirection: 'row', alignItems: 'center', gap: 10, backgroundColor: '#0a1525', borderRadius: 10, padding: 10, borderWidth: 1, borderColor: '#0a1525' },
+  modelSelected: { borderColor: '#55e6b0', backgroundColor: '#12302f' },
   footer: { color: '#6d7e95', fontSize: 12, lineHeight: 18, paddingBottom: 18 }
 });

@@ -11,7 +11,7 @@
   },
   "capabilities": {
     "phone": ["device-info", "battery-network", "location", "camera", "microphone", "notifications", "clipboard", "termux"],
-    "desktop": ["app-launch", "sound", "custom-rest-connectors", "user-presence"],
+    "desktop": ["app-launch", "sound", "custom-rest-connectors", "opencode-compatible-models", "advanced-settings", "user-presence"],
     "plannedDesktop": ["display-capture", "pointer", "keyboard", "clipboard"],
     "safety": ["audit", "session-expiry", "revoke", "emergency-stop", "secret-redaction", "same-origin-api-paths"]
   },

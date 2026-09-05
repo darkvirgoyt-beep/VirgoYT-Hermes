@@ -9,7 +9,7 @@ The repository is designed so a user can install from a terminal without opening
 | Component | Platforms | Current capability |
 |---|---|---|
 | Hybrid Hermes Companion | Android | Source in `companion/`; LAN pairing UI, status, allowlisted controls, sound, emergency stop |
-| Hermes Bridge | Termux, Ubuntu/Linux, macOS, Windows | Pairing, health/status, explicit app allowlist, app launch, sound actions, custom REST API connectors, emergency stop |
+| Hermes Bridge | Termux, Ubuntu/Linux, macOS, Windows | Pairing, health/status, explicit app allowlist, app launch, sound actions, custom REST API connectors, OpenCode-compatible local models, emergency stop |
 | Hermes skills | Hermes-compatible agents | Portable skills under `skills/` and the root `SKILL.md` manifest |
 | Optional relay | Any supported host | Configure `HERMES_RELAY_URL`; the local bridge remains the only component with OS access |
 
@@ -152,6 +152,10 @@ The default listener is `127.0.0.1:47821`. Do not bind it to `0.0.0.0` unless yo
 ## Custom API connectors
 
 The Companion can save named custom REST API connectors on the paired bridge. A connector supports a base URL, no authentication, Bearer authentication, or a custom API-key header, plus a health-check path. Connector secrets are stored only in the bridge's restrictive local state file and are never returned by `/status` or `/connectors`. The Companion can test a saved connector; request execution is limited to the connector's own base URL and supports only GET and POST. Never add private keys to the repository or expose the bridge to the public internet.
+
+## OpenCode-compatible models and advanced settings
+
+Hermes includes OpenCode-compatible local model profiles for Ollama, LM Studio, and llama.cpp. The reference configuration is in [`opencode/opencode.json`](opencode/opencode.json) and follows OpenCode's provider/model format. The Companion can select the active profile and change safety settings such as sensitive-action confirmation and request timeout. Local models are free to use after the local runtime and model weights are installed; Hermes does not claim that cloud providers or model downloads are free. The bridge exposes authenticated `/models`, `/models/select`, `/models/chat`, `/settings`, and `/models` profile endpoints.
 
 ## Hermes skill bundle
 

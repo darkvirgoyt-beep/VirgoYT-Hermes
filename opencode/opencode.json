@@ -1,0 +1,35 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "ollama/llama3.2:3b",
+  "small_model": "ollama/llama3.2:3b",
+  "autoupdate": false,
+  "provider": {
+    "ollama": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Ollama (local/free)",
+      "options": { "baseURL": "http://127.0.0.1:11434/v1" },
+      "models": {
+        "llama3.2:3b": { "name": "Llama 3.2 3B (local)" },
+        "qwen2.5-coder:7b": { "name": "Qwen 2.5 Coder 7B (local)" },
+        "deepseek-coder:6.7b": { "name": "DeepSeek Coder 6.7B (local)" }
+      }
+    },
+    "lmstudio": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "LM Studio (local/free)",
+      "options": { "baseURL": "http://127.0.0.1:1234/v1" },
+      "models": { "local-model": { "name": "LM Studio loaded model" } }
+    },
+    "llama.cpp": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "llama.cpp server (local/free)",
+      "options": { "baseURL": "http://127.0.0.1:8080/v1" },
+      "models": { "local-model": { "name": "llama.cpp loaded model" } }
+    }
+  },
+  "tools": {
+    "bash": false,
+    "write": false,
+    "edit": false
+  }
+}

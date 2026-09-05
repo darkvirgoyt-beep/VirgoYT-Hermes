@@ -31,6 +31,10 @@ Keep the computer and Android phone on the same trusted Wi-Fi. In the app, enter
 
 The bridge currently does not provide screen streaming, mouse, or keyboard control; the app displays that limitation rather than claiming those controls work.
 
+## OpenCode-compatible models
+
+The app's **OpenCode Models & Settings** panel includes local/free profiles for Ollama, LM Studio, and llama.cpp. These profiles use the OpenAI-compatible `/v1/chat/completions` format documented by OpenCode. Install OpenCode separately with its official installer if you want the OpenCode CLI; Hermes does not silently install or execute the CLI. Install a local model runtime separately, then select the matching profile in the app. Free means local runtime usage—model downloads and cloud providers may have their own costs.
+
 ## Custom API connectors
 
 After pairing, use **Custom API Connectors** in the app to save a named REST API. Choose no authentication, Bearer authentication, or a custom header such as `X-Api-Key`, then provide a health-check path. The secret is sent once over the paired HTTPS or trusted LAN session and stored only in the bridge's local state directory; it is not returned to the app. Connector testing is restricted to the saved base URL, and the bridge permits only GET and POST requests.
