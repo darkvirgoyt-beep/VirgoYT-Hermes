@@ -15,10 +15,10 @@ const relayUrl = process.env.HERMES_RELAY_URL || '';
 function ensureState() {
   fs.mkdirSync(root, { recursive: true, mode: 0o700 });
   if (!fs.existsSync(stateFile)) {
-    fs.writeFileSync(stateFile, JSON.stringify({ deviceId: crypto.randomUUID(), paired: false, stopped: false, allowlist: [], sessionExpiresAt: null, mode: 'local' }, null, 2), { mode: 0o600 });
+    fs.writeFileSync(stateFile, JSON.stringify({ deviceId: crypto.randomUUID(), paired: false, stopped: false, allowlist: [], connectors: [], sessionExpiresAt: null, mode: 'local' }, null, 2), { mode: 0o600 });
   }
 }
-function loadState() { ensureState(); return JSON.parse(fs.readFileSync(stateFile, 'utf8')); }
+function loadState() { ensureState(); const state = JSON.parse(fs.readFileSync(stateFile, 'utf8')); if (!Array.isArray(state.connectors)) state.connectors = []; return state; }
 function saveState(state) { ensureState(); fs.writeFileSync(stateFile, JSON.stringify(state, null, 2), { mode: 0o600 }); }
 function json(res, status, body) { res.writeHead(status, { 'content-type': 'application/json; charset=utf-8', 'access-control-allow-origin': '*', 'access-control-allow-headers': 'content-type, authorization', 'access-control-allow-methods': 'GET, POST, OPTIONS' }); res.end(JSON.stringify(body)); }
 function token() { return crypto.randomBytes(24).toString('base64url'); }
@@ -28,6 +28,31 @@ function commandFor(app) { const table = { linux: { terminal: 'x-terminal-emulat
 function launch(app) { const executable = commandFor(app); if (!executable) throw new Error(`No safe launcher configured for ${app} on ${process.platform}`); const child = process.platform === 'win32' ? spawn('cmd.exe', ['/c', executable], { detached: true, stdio: 'ignore' }) : spawn(executable, [], { detached: true, stdio: 'ignore' }); child.unref(); return { app, executable, started: true }; }
 function sound(action) { const platform = process.platform; if (platform === 'linux') { const args = action === 'mute' ? ['set', '@DEFAULT_SINK@', 'toggle'] : ['set-sink-volume', '@DEFAULT_SINK@', action === 'up' ? '+5%' : '-5%']; return spawn('pactl', args, { stdio: 'ignore' }); } if (platform === 'darwin') { const delta = action === 'up' ? 'up' : 'down'; return spawn('osascript', ['-e', `set volume output volume ((output volume of (get volume settings)) ${delta === 'up' ? '+' : '-'} 5)`], { stdio: 'ignore' }); } if (platform === 'win32') return spawn('powershell', ['-NoProfile', '-Command', '(New-Object -ComObject WScript.Shell).SendKeys([char]173)'], { stdio: 'ignore' }); throw new Error('Sound control is unavailable on this platform'); }
 function auth(req, state) { const header = req.headers.authorization || ''; return state.paired && header === `Bearer ${state.sessionToken}` && !state.stopped && (!state.sessionExpiresAt || Date.now() < state.sessionExpiresAt); }
+function publicConnector(connector) { return { id: connector.id, name: connector.name, baseUrl: connector.baseUrl, authType: connector.authType, headerName: connector.headerName, healthPath: connector.healthPath, updatedAt: connector.updatedAt }; }
+function connectorFor(state, id) { return state.connectors.find(item => item.id === id); }
+function validateConnector(body) {
+  const baseUrl = String(body.baseUrl || '').trim().replace(/\/$/, '');
+  const parsed = new URL(baseUrl);
+  if (!['http:', 'https:'].includes(parsed.protocol)) throw new Error('connector URL must use http or https');
+  const name = String(body.name || '').trim().slice(0, 80);
+  if (!name) throw new Error('connector name is required');
+  const authType = ['none', 'bearer', 'header'].includes(body.authType) ? body.authType : 'none';
+  const headerName = authType === 'header' ? String(body.headerName || '').trim().slice(0, 80) : authType === 'bearer' ? 'Authorization' : '';
+  if (authType !== 'none' && !headerName) throw new Error('auth header name is required');
+  const secret = String(body.secret || '');
+  if (authType !== 'none' && !secret) throw new Error('API secret is required');
+  return { name, baseUrl, authType, headerName, secret, healthPath: String(body.healthPath || '/').startsWith('/') ? String(body.healthPath || '/') : `/${body.healthPath}`, updatedAt: new Date().toISOString() };
+}
+function requestUrl(connector, requestPath) { const pathName = String(requestPath || '/'); if (!pathName.startsWith('/')) throw new Error('request path must start with /'); const url = new URL(pathName, `${connector.baseUrl}/`); if (url.origin !== new URL(connector.baseUrl).origin) throw new Error('request path must stay on the connector base URL'); return url; }
+async function callConnector(connector, requestPath, method = 'GET', body) {
+  const headers = { accept: 'application/json, text/plain, */*' };
+  if (connector.authType === 'bearer') headers.authorization = `Bearer ${connector.secret}`;
+  if (connector.authType === 'header') headers[connector.headerName.toLowerCase()] = connector.secret;
+  if (body !== undefined) headers['content-type'] = 'application/json';
+  const response = await fetch(requestUrl(connector, requestPath), { method, headers, body: body === undefined ? undefined : JSON.stringify(body), signal: AbortSignal.timeout(10000) });
+  const text = await response.text();
+  return { ok: response.ok, status: response.status, contentType: response.headers.get('content-type') || '', body: text.slice(0, 20000) };
+}
 
 async function handle(req, res) {
   if (req.method === 'OPTIONS') return json(res, 204, {});
@@ -42,8 +67,13 @@ async function handle(req, res) {
     }
     if (!auth(req, state)) return json(res, 401, { ok: false, error: 'pairing required, session expired, or emergency stop active' });
     if (req.method === 'POST' && req.url === '/stop') { saveState({ ...state, stopped: true, paired: false, sessionToken: null }); return json(res, 200, { ok: true, stopped: true }); }
-    if (req.method === 'GET' && req.url === '/status') return json(res, 200, { ok: true, ...capabilities(), mode: state.mode, expiresAt: new Date(state.sessionExpiresAt).toISOString(), allowlist: state.allowlist });
+    if (req.method === 'GET' && req.url === '/status') return json(res, 200, { ok: true, ...capabilities(), mode: state.mode, expiresAt: new Date(state.sessionExpiresAt).toISOString(), allowlist: state.allowlist, connectors: state.connectors.map(publicConnector) });
     if (req.method === 'POST' && req.url === '/allowlist') { const body = await readBody(req); const apps = Array.isArray(body.apps) ? body.apps.filter(item => ['terminal', 'browser', 'files'].includes(item)) : []; saveState({ ...state, allowlist: apps }); return json(res, 200, { ok: true, allowlist: apps }); }
+    if (req.method === 'GET' && req.url === '/connectors') return json(res, 200, { ok: true, connectors: state.connectors.map(publicConnector) });
+    if (req.method === 'POST' && req.url === '/connectors') { const body = await readBody(req); const next = validateConnector(body); const connector = { id: body.id && connectorFor(state, body.id) ? body.id : crypto.randomUUID(), ...next }; const connectors = state.connectors.filter(item => item.id !== connector.id); connectors.push(connector); saveState({ ...state, connectors }); return json(res, 200, { ok: true, connector: publicConnector(connector) }); }
+    if (req.method === 'DELETE' && req.url.startsWith('/connectors/')) { const id = decodeURIComponent(req.url.slice('/connectors/'.length)); if (!connectorFor(state, id)) return json(res, 404, { ok: false, error: 'connector not found' }); saveState({ ...state, connectors: state.connectors.filter(item => item.id !== id) }); return json(res, 200, { ok: true, deleted: id }); }
+    if (req.method === 'POST' && req.url === '/connectors/test') { const body = await readBody(req); const connector = connectorFor(state, body.id); if (!connector) return json(res, 404, { ok: false, error: 'connector not found' }); const result = await callConnector(connector, connector.healthPath, 'GET'); return json(res, result.ok ? 200 : 502, { ok: result.ok, connector: publicConnector(connector), status: result.status, body: result.body }); }
+    if (req.method === 'POST' && req.url === '/connectors/request') { const body = await readBody(req); const connector = connectorFor(state, body.id); if (!connector) return json(res, 404, { ok: false, error: 'connector not found' }); const method = String(body.method || 'GET').toUpperCase(); if (!['GET', 'POST'].includes(method)) return json(res, 400, { ok: false, error: 'only GET and POST are supported' }); const result = await callConnector(connector, body.path, method, method === 'POST' ? body.body : undefined); return json(res, result.ok ? 200 : 502, { ok: result.ok, status: result.status, contentType: result.contentType, body: result.body }); }
     if (req.method === 'POST' && req.url === '/launch') { const body = await readBody(req); if (!state.allowlist.includes(body.app)) return json(res, 403, { ok: false, error: 'application is not allowlisted' }); return json(res, 200, launch(body.app)); }
     if (req.method === 'POST' && req.url === '/sound') { const body = await readBody(req); if (!['up', 'down', 'mute'].includes(body.action)) return json(res, 400, { ok: false, error: 'action must be up, down, or mute' }); sound(body.action); return json(res, 200, { ok: true, action: body.action }); }
     return json(res, 404, { ok: false, error: 'not found' });
