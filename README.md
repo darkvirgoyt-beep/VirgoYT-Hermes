@@ -19,6 +19,14 @@ Full desktop display streaming, pointer control, and keyboard control require na
 
 Install Node.js 18 or newer and Git, then run:
 
+For a direct GitHub package launch without cloning manually:
+
+```bash
+HERMES_PAIRING_CODE=123456 npx --yes github:darkvirgoyt-beep/VirgoYT-Hermes start
+```
+
+Replace `123456` with the six-digit code shown by Hybrid Hermes. The bootstrap script below is recommended for background-service installation because it creates a stable local command.
+
 ```bash
 curl -fsSL https://raw.githubusercontent.com/darkvirgoyt-beep/VirgoYT-Hermes/main/scripts/install-bridge.sh | bash
 export PATH="$HOME/.local/bin:$PATH"

@@ -1,0 +1,17 @@
+{
+  "name": "virgoyt-hermes",
+  "version": "0.1.0",
+  "private": false,
+  "description": "VirgoYT-Hermes skills and Hybrid Hermes terminal bridge",
+  "type": "module",
+  "bin": {
+    "hermes-bridge": "./bridge/cli.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "bridge": "node ./bridge/cli.mjs",
+    "test:bridge": "node --test ./bridge/test/*.test.mjs"
+  }
+}
