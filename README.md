@@ -8,7 +8,7 @@ The repository is designed so a user can install from a terminal without opening
 
 | Component | Platforms | Current capability |
 |---|---|---|
-| Hybrid Hermes Companion | Android | Pairing UI, approvals, capabilities, audit trail, emergency stop, camera/location sessions |
+| Hybrid Hermes Companion | Android | Source in `companion/`; LAN pairing UI, status, allowlisted controls, sound, emergency stop |
 | Hermes Bridge | Termux, Ubuntu/Linux, macOS, Windows | Pairing, health/status, explicit app allowlist, app launch, sound actions, emergency stop |
 | Hermes skills | Hermes-compatible agents | Portable skills under `skills/` and the root `SKILL.md` manifest |
 | Optional relay | Any supported host | Configure `HERMES_RELAY_URL`; the local bridge remains the only component with OS access |
@@ -37,6 +37,14 @@ Create a computer pairing code in **Hybrid Hermes → Devices → Pair a new dev
 ```bash
 HERMES_PAIRING_CODE=123456 hermes-bridge start
 ```
+
+For an Android Companion on a different device from the computer, use the computer's trusted LAN binding instead:
+
+```bash
+HERMES_BRIDGE_HOST=0.0.0.0 HERMES_PAIRING_CODE=123456 hermes-bridge start
+```
+
+Then enter the computer's LAN address, such as `http://192.168.1.100:47821`, in the Android Companion. Keep the bridge on a trusted network and never port-forward it to the public internet.
 
 Replace `123456` with the six-digit code shown by the app. The local endpoint listens on `127.0.0.1:47821` by default. Check it with:
 
@@ -150,6 +158,16 @@ https://github.com/darkvirgoyt-beep/VirgoYT-Hermes
 ```
 
 ## Development
+
+Build the Android Companion from source:
+
+```bash
+cd companion
+npm install
+npx eas-cli@latest build --platform android --profile preview
+```
+
+The preview profile produces an installable APK. See [`companion/README.md`](companion/README.md) for connection and local-development instructions.
 
 Run bridge tests with:
 

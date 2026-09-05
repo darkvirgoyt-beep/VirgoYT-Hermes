@@ -11,7 +11,8 @@
   },
   "capabilities": {
     "phone": ["device-info", "battery-network", "location", "camera", "microphone", "notifications", "clipboard", "termux"],
-    "desktop": ["app-launch", "sound", "display-capture", "pointer", "keyboard", "clipboard", "user-presence"],
+    "desktop": ["app-launch", "sound", "user-presence"],
+    "plannedDesktop": ["display-capture", "pointer", "keyboard", "clipboard"],
     "safety": ["audit", "session-expiry", "revoke", "emergency-stop"]
   },
   "security": {

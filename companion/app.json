@@ -1,0 +1,15 @@
+{
+  "expo": {
+    "name": "Hybrid Hermes Companion",
+    "slug": "hybrid-hermes-companion",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "dark",
+    "scheme": "hybrid-hermes",
+    "android": {
+      "package": "com.virgoyt.hybridhermes",
+      "permissions": ["android.permission.INTERNET"],
+      "usesCleartextTraffic": true
+    }
+  }
+}
