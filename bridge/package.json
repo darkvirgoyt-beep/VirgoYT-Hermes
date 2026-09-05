@@ -1,0 +1,20 @@
+{
+  "name": "@virgoyt/hermes-bridge",
+  "version": "0.1.0",
+  "private": false,
+  "description": "Hybrid Hermes local and relay bridge for Termux and desktop hosts",
+  "type": "module",
+  "bin": {
+    "hermes-bridge": "./cli.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node ./cli.mjs start",
+    "pair": "node ./cli.mjs pair",
+    "status": "node ./cli.mjs status",
+    "stop": "node ./cli.mjs stop",
+    "test": "node --test ./test/*.test.mjs"
+  }
+}

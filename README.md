@@ -1,80 +1,166 @@
-# 🚀 VirgoYT-Hermes
+# VirgoYT-Hermes
 
-A personal AI agent configuration and skill toolkit by **VirgoYT**.
+VirgoYT-Hermes is a portable Hermes skill bundle plus the **Hybrid Hermes Bridge**. The bridge lets the Hybrid Hermes Companion pair with an authorized Termux phone or a computer running Ubuntu/Linux, macOS, or Windows. It provides a small, auditable command surface for device status, allowlisted app launching, sound/media actions, session expiry, and emergency stop.
 
-VirgoYT-Hermes provides reusable AI skills, tools, configurations, and workflows designed for advanced AI coding assistants.
+The repository is designed so a user can install from a terminal without opening the source tree manually. The companion app supplies the pairing code; the terminal bridge supplies the local device endpoint.
 
-## ✨ Features
+## What is included
 
-- 🤖 Hermes Agent support
-- 🧠 AI skill management
-- 🎨 UI/UX design intelligence
-- 🏗️ Software architecture planning
-- 📐 System design and visualization
-- 🐛 Debugging workflows
-- 💻 Development assistance
-- 🔐 GPG signed Git workflow
-- 📱 Termux + Linux environment support
+| Component | Platforms | Current capability |
+|---|---|---|
+| Hybrid Hermes Companion | Android | Pairing UI, approvals, capabilities, audit trail, emergency stop, camera/location sessions |
+| Hermes Bridge | Termux, Ubuntu/Linux, macOS, Windows | Pairing, health/status, explicit app allowlist, app launch, sound actions, emergency stop |
+| Hermes skills | Hermes-compatible agents | Portable skills under `skills/` and the root `SKILL.md` manifest |
+| Optional relay | Any supported host | Configure `HERMES_RELAY_URL`; the local bridge remains the only component with OS access |
 
----
+Full desktop display streaming, pointer control, and keyboard control require native OS capture/input adapters and the correct operating-system permissions. The bridge reports these capabilities instead of pretending they are available. Do not expose the bridge port to the public internet.
 
-# Supported AI Agents
+## Fast install: Linux and macOS
 
-Skills are built using a portable Agent Skills structure.
-
-Compatible with:
-
-- Hermes Agent
-- Claude Code
-- OpenCode
-- Other AI agents supporting Agent Skills format
-
-> Note: The AI agent must support loading external skills.
-
----
-
-# Installation
-
-## Termux Installation
-
-Install requirements:
+Install Node.js 18 or newer and Git, then run:
 
 ```bash
-pkg update && pkg upgrade -y
+curl -fsSL https://raw.githubusercontent.com/darkvirgoyt-beep/VirgoYT-Hermes/main/scripts/install-bridge.sh | bash
+export PATH="$HOME/.local/bin:$PATH"
 ```
+
+Create a computer pairing code in **Hybrid Hermes → Devices → Pair a new device → Computer**. Start the bridge with the code:
+
 ```bash
-pkg install git python nodejs proot-distro -y
-proot-distro install ubuntu
-proot-distro login ubuntu
+HERMES_PAIRING_CODE=123456 hermes-bridge start
 ```
+
+Replace `123456` with the six-digit code shown by the app. The local endpoint listens on `127.0.0.1:47821` by default. Check it with:
+
 ```bash
-apt update && apt upgrade -y
-apt install git python3 python3-pip nodejs npm nano -y
+hermes-bridge status
 ```
+
+Stop every active control session immediately with:
+
 ```bash
-git clone https://github.com/darkvirgoyt-beep/VirgoYT-Hermes.git
-
-cd VirgoYT-Hermes
-
-chmod +x install.sh
-
-./install.sh
-  hermes
+hermes-bridge stop
 ```
 
-## Importing into Manus Skills
+## Ubuntu background mode
 
-The repository root now contains a top-level `SKILL.md`, so use this URL to import the complete bundle:
+After installing the bridge, copy the service template and replace the pairing-code placeholder:
+
+```bash
+mkdir -p ~/.config/systemd/user
+cp ~/.virgoyt-hermes/VirgoYT-Hermes/scripts/virgoyt-hermes-bridge.service ~/.config/systemd/user/
+sed -i "s/REPLACE_WITH_APP_CODE/123456/" ~/.config/systemd/user/virgoyt-hermes-bridge.service
+systemctl --user daemon-reload
+systemctl --user enable --now virgoyt-hermes-bridge.service
+systemctl --user status virgoyt-hermes-bridge.service
+```
+
+For a service that continues after logout, enable user lingering for your account:
+
+```bash
+loginctl enable-linger "$USER"
+```
+
+Use `systemctl --user stop virgoyt-hermes-bridge.service` to stop the background service. The bridge uses a per-user state directory at `~/.virgoyt-hermes` with restrictive file permissions.
+
+## Windows PowerShell
+
+Install Node.js 18+ and Git, then run PowerShell as the current user:
+
+```powershell
+irm https://raw.githubusercontent.com/darkvirgoyt-beep/VirgoYT-Hermes/main/scripts/install-bridge.ps1 | iex
+$env:HERMES_PAIRING_CODE="123456"
+node "$HOME\.virgoyt-hermes\VirgoYT-Hermes\bridge\cli.mjs" start
+```
+
+Replace `123456` with the code shown by the companion. Emergency stop:
+
+```powershell
+node "$HOME\.virgoyt-hermes\VirgoYT-Hermes\bridge\cli.mjs" stop
+```
+
+For Windows background startup, create a Task Scheduler entry that runs the same `node ... bridge\\cli.mjs start` command only after the user has set the pairing code. Keep the bridge bound to localhost unless you intentionally configure a protected LAN transport.
+
+## Normal Termux phone bridge
+
+Use **normal Termux**, not only an Ubuntu PRoot shell. Install Termux and Termux:API from a trusted source, then run:
+
+```bash
+pkg update -y
+pkg install -y git nodejs termux-api
+curl -fsSL https://raw.githubusercontent.com/darkvirgoyt-beep/VirgoYT-Hermes/main/scripts/install-bridge.sh | bash
+export PATH="$HOME/.local/bin:$PATH"
+```
+
+Create a **phone pairing code** in the companion, then run:
+
+```bash
+HERMES_PAIRING_CODE=123456 hermes-bridge start
+```
+
+Termux:API capabilities must be enabled individually. The bridge must not receive arbitrary shell commands. PRoot Ubuntu is useful for development, but it cannot provide Android’s native permission prompts or the host Android display/input layer by itself.
+
+## Pairing and safety model
+
+Pairing codes are short-lived. The bridge stores only local session metadata and a session token with restrictive permissions. Each session expires, can be revoked from the companion, and can be stopped from the terminal. Sensitive actions should be confirmed in the companion before execution.
+
+Passkeys, fingerprints, biometric templates, private keys, and OS authentication secrets are never read or exported by this project. The bridge may request an operating-system user-presence prompt and receive a success/failure result, but it cannot bypass that prompt or obtain the underlying secret.
+
+## Optional relay mode
+
+A relay is optional. If a compatible relay is available, set its URL before starting:
+
+```bash
+export HERMES_RELAY_URL="https://your-relay.example"
+HERMES_PAIRING_CODE=123456 hermes-bridge start
+```
+
+The relay must authenticate both endpoints, expire sessions, support revocation, avoid storing screen frames unnecessarily, and never expose raw desktop ports. Local LAN mode is preferred for privacy and lower latency.
+
+## Bridge API
+
+The local bridge provides these endpoints after pairing:
+
+| Method | Endpoint | Purpose |
+|---|---|---|
+| `GET` | `/health` | Public health and capability summary; no control token |
+| `POST` | `/pair` | Exchange the companion’s six-digit code for a short-lived session |
+| `GET` | `/status` | Read paired status and active allowlist |
+| `POST` | `/allowlist` | Set the explicit app allowlist |
+| `POST` | `/launch` | Launch only `terminal`, `browser`, or `files` when allowlisted |
+| `POST` | `/sound` | Request `up`, `down`, or `mute` on supported hosts |
+| `POST` | `/stop` | Revoke the session and activate emergency stop |
+
+The default listener is `127.0.0.1:47821`. Do not bind it to `0.0.0.0` unless you have added authenticated LAN transport and firewall rules.
+
+## Hermes skill bundle
+
+The repository root contains a portable `SKILL.md` manifest. Individual skills are under `skills/`, including the portable compatibility catalog. Import the full repository into a compatible agent with:
 
 ```text
 https://github.com/darkvirgoyt-beep/VirgoYT-Hermes
 ```
 
-To import one skill directly, use its folder URL, which must contain that skill’s own `SKILL.md`:
+## Development
 
-```text
-https://github.com/darkvirgoyt-beep/VirgoYT-Hermes/tree/main/skills/cloud-computer
-https://github.com/darkvirgoyt-beep/VirgoYT-Hermes/tree/main/skills/manus-compat
+Run bridge tests with:
+
+```bash
+cd bridge
+npm test
 ```
 
-The previous error occurred because the repository had no root-level `SKILL.md`. The root manifest fixes that error. Private Manus runtime instructions are not copied into the repository; `manus-compat` provides portable capability mapping instead.
+Run the existing Hermes runtime installation with:
+
+```bash
+chmod +x install.sh
+./install.sh
+```
+
+## Troubleshooting
+
+If `hermes-bridge` is not found, add `$HOME/.local/bin` to `PATH` on Linux/macOS or invoke `node` with the bridge path on Windows. If pairing fails, create a new code and ensure `HERMES_PAIRING_CODE` matches exactly; codes expire after ten minutes. If Termux actions fail, confirm that Termux:API is installed from the same trusted source as Termux and that Android permissions are granted. If sound control is unavailable, the host may not have the expected audio tool (`pactl` on Linux, AppleScript on macOS, or PowerShell media handling on Windows). If a capability is reported unsupported, install the required native adapter and OS permission rather than disabling the safety policy.
+
+## License and contributions
+
+Review the repository history and project owner’s licensing decision before redistributing. Contributions should preserve explicit pairing, least-privilege allowlists, user confirmation for sensitive actions, and emergency-stop behavior.

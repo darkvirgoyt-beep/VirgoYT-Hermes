@@ -1,0 +1,17 @@
+[Unit]
+Description=VirgoYT Hermes Bridge
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+Environment=HERMES_BRIDGE_PORT=47821
+Environment=HERMES_PAIRING_CODE=REPLACE_WITH_APP_CODE
+ExecStart=%h/.local/bin/hermes-bridge start
+Restart=on-failure
+RestartSec=3
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=default.target

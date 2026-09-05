@@ -1,0 +1,23 @@
+{
+  "protocol": "hybrid-hermes-bridge",
+  "version": 1,
+  "companionProject": "hybrid-hermes-companion",
+  "companionCheckpoint": "manus-webdev://1f3c5116",
+  "defaultLocalEndpoint": "http://127.0.0.1:47821",
+  "pairing": {
+    "codeLength": 6,
+    "ttlSeconds": 600,
+    "approvalRequired": true
+  },
+  "capabilities": {
+    "phone": ["device-info", "battery-network", "location", "camera", "microphone", "notifications", "clipboard", "termux"],
+    "desktop": ["app-launch", "sound", "display-capture", "pointer", "keyboard", "clipboard", "user-presence"],
+    "safety": ["audit", "session-expiry", "revoke", "emergency-stop"]
+  },
+  "security": {
+    "arbitraryShell": false,
+    "exportPasskeys": false,
+    "exportBiometricData": false,
+    "defaultBindAddress": "127.0.0.1"
+  }
+}
