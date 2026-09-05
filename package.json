@@ -5,6 +5,7 @@
   "description": "VirgoYT-Hermes skills and Hybrid Hermes terminal bridge",
   "type": "module",
   "bin": {
+    "hermes": "./core/hermes.py",
     "hermes-bridge": "./bridge/cli.mjs"
   },
   "engines": {
@@ -12,6 +13,7 @@
   },
   "scripts": {
     "bridge": "node ./bridge/cli.mjs",
+    "start": "python3 ./core/hermes.py",
     "test:bridge": "node --test ./bridge/test/*.test.mjs"
   }
 }

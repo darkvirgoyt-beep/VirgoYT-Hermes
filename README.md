@@ -165,6 +165,32 @@ The repository root contains a portable `SKILL.md` manifest. Individual skills a
 https://github.com/darkvirgoyt-beep/VirgoYT-Hermes
 ```
 
+## Direct Hermes runtime commands
+
+The repository now installs a single `hermes` terminal command with the skill bundle, provider registry, model presets, custom API settings, and connector settings built in. Install everything with:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/darkvirgoyt-beep/VirgoYT-Hermes/main/install.sh | bash
+export PATH="$HOME/.local/bin:$PATH"
+hermes
+```
+
+Inside Hermes, use:
+
+```text
+/models                 List local, OpenRouter, Hugging Face, OpenCode, and custom models
+/providers              List all built-in and custom providers
+/model <provider/id>    Select the active model
+/provider add           Add a custom OpenAI-compatible provider
+/connector add          Add a custom API connector
+/connectors             List saved connectors without exposing secrets
+/skills                 List every installed skill
+/settings               Show advanced settings
+/settings set key val   Change timeout, notifications, or confirmation settings
+```
+
+This is the direct runtime path; no separate Companion app or bridge command is required for these registry and settings features. The Companion and bridge remain available for connected-computer controls.
+
 ## Development
 
 Build the Android Companion from source:

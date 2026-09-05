@@ -1,0 +1,5 @@
+core/__pycache__/
+*.pyc
+companion/node_modules/
+companion/android/
+companion/ios/
