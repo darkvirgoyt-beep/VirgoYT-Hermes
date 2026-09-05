@@ -1,0 +1,300 @@
+{
+  "skills": [
+    {
+      "name": "AI-Native-Game",
+      "path": "skills/AI-Native-Game",
+      "hasSkillMd": false,
+      "description": "AI-native game development skill"
+    },
+    {
+      "name": "Agent-Hive-Workbench",
+      "path": "skills/Agent-Hive-Workbench",
+      "hasSkillMd": false,
+      "description": "Multi-agent workbench for AI agent orchestration"
+    },
+    {
+      "name": "Agentic-SEO-Skill",
+      "path": "skills/Agentic-SEO-Skill",
+      "hasSkillMd": true,
+      "description": "SEO automation and optimization using AI agents",
+      "linked": true
+    },
+    {
+      "name": "Claude-Skills",
+      "path": "skills/Claude-Skills",
+      "hasSkillMd": false,
+      "description": "Collection of Claude Code skills"
+    },
+    {
+      "name": "GodotPrompter",
+      "path": "skills/GodotPrompter",
+      "hasSkillMd": false,
+      "description": "Prompt engineering for Godot game engine"
+    },
+    {
+      "name": "PtcgDeckAgent",
+      "path": "skills/PtcgDeckAgent",
+      "hasSkillMd": false,
+      "description": "Pokémon TCG deck building agent"
+    },
+    {
+      "name": "SkillNet",
+      "path": "skills/SkillNet",
+      "hasSkillMd": false,
+      "description": "Skill discovery and management network"
+    },
+    {
+      "name": "SparkLabs",
+      "path": "skills/SparkLabs",
+      "hasSkillMd": false,
+      "description": "AI experimentation and prototyping lab"
+    },
+    {
+      "name": "UnrealClaude",
+      "path": "skills/UnrealClaude",
+      "hasSkillMd": false,
+      "description": "Claude integration for Unreal Engine"
+    },
+    {
+      "name": "Vibe-Skills",
+      "path": "skills/Vibe-Skills",
+      "hasSkillMd": true,
+      "description": "Vibe coding workflows and patterns",
+      "linked": true
+    },
+    {
+      "name": "agent-rules-books",
+      "path": "skills/agent-rules-books",
+      "hasSkillMd": false,
+      "description": "Agent rules and best practices documentation"
+    },
+    {
+      "name": "ai-factory",
+      "path": "skills/ai-factory",
+      "hasSkillMd": false,
+      "description": "AI model factory and pipeline automation"
+    },
+    {
+      "name": "ai-game-devtools",
+      "path": "skills/ai-game-devtools",
+      "hasSkillMd": false,
+      "description": "AI-powered game development tools"
+    },
+    {
+      "name": "ai-video-generator-claude",
+      "path": "skills/ai-video-generator-claude",
+      "hasSkillMd": false,
+      "description": "Claude-powered video generation"
+    },
+    {
+      "name": "awesome-ai-game-generation",
+      "path": "skills/awesome-ai-game-generation",
+      "hasSkillMd": false,
+      "description": "Curated list of AI game generation resources"
+    },
+    {
+      "name": "awesome-gamedev-agent-skills",
+      "path": "skills/awesome-gamedev-agent-skills",
+      "hasSkillMd": false,
+      "description": "Game development agent skills collection"
+    },
+    {
+      "name": "blender-skills-arjun988",
+      "path": "skills/blender-skills-arjun988",
+      "hasSkillMd": false,
+      "description": "Blender 3D skills by arjun988"
+    },
+    {
+      "name": "blender-skills-kevinbadi",
+      "path": "skills/blender-skills-kevinbadi",
+      "hasSkillMd": false,
+      "description": "Blender 3D skills by kevinbadi"
+    },
+    {
+      "name": "cangjie-skill",
+      "path": "skills/cangjie-skill",
+      "hasSkillMd": true,
+      "description": "Distill books, videos, podcasts into executable skills",
+      "linked": true
+    },
+    {
+      "name": "codex-ai-game-studio",
+      "path": "skills/codex-ai-game-studio",
+      "hasSkillMd": false,
+      "description": "AI game studio using Codex"
+    },
+    {
+      "name": "compass-skills",
+      "path": "skills/compass-skills",
+      "hasSkillMd": false,
+      "description": "Navigation and orientation skills"
+    },
+    {
+      "name": "docmd",
+      "path": "skills/docmd",
+      "hasSkillMd": false,
+      "description": "Documentation command tools"
+    },
+    {
+      "name": "fennara-godot-ai",
+      "path": "skills/fennara-godot-ai",
+      "hasSkillMd": false,
+      "description": "Godot AI integration by fennara"
+    },
+    {
+      "name": "godot-agent",
+      "path": "skills/godot-agent",
+      "hasSkillMd": false,
+      "description": "AI agent for Godot game engine"
+    },
+    {
+      "name": "google-maps-skill",
+      "path": "skills/google-maps-skill",
+      "hasSkillMd": false,
+      "description": "Google Maps integration skill"
+    },
+    {
+      "name": "google-skills",
+      "path": "skills/google-skills",
+      "hasSkillMd": false,
+      "description": "Google AI skills collection"
+    },
+    {
+      "name": "kicad-happy",
+      "path": "skills/kicad-happy",
+      "hasSkillMd": false,
+      "description": "KiCad PCB design happiness skills"
+    },
+    {
+      "name": "lore-weave",
+      "path": "skills/lore-weave",
+      "hasSkillMd": false,
+      "description": "Narrative and lore weaving for games"
+    },
+    {
+      "name": "map-animation-skills",
+      "path": "skills/map-animation-skills",
+      "hasSkillMd": false,
+      "description": "Map animation and visualization skills"
+    },
+    {
+      "name": "mega-mind-skills",
+      "path": "skills/mega-mind-skills",
+      "hasSkillMd": false,
+      "description": "Large-scale reasoning and planning skills"
+    },
+    {
+      "name": "motion-skills",
+      "path": "skills/motion-skills",
+      "hasSkillMd": false,
+      "description": "Animation and motion design skills"
+    },
+    {
+      "name": "n8n-as-code",
+      "path": "skills/n8n-as-code",
+      "hasSkillMd": false,
+      "description": "n8n workflow automation as code"
+    },
+    {
+      "name": "novel-to-game",
+      "path": "skills/novel-to-game",
+      "hasSkillMd": false,
+      "description": "Convert novels to interactive games"
+    },
+    {
+      "name": "one-skill-to-rule-them-all",
+      "path": "skills/one-skill-to-rule-them-all",
+      "hasSkillMd": true,
+      "description": "Meta-skill manager for skill discovery",
+      "linked": true
+    },
+    {
+      "name": "open-agent-hub",
+      "path": "skills/open-agent-hub",
+      "hasSkillMd": false,
+      "description": "Open hub for AI agent collaboration"
+    },
+    {
+      "name": "pokerwars-starterbot-java",
+      "path": "skills/pokerwars-starterbot-java",
+      "hasSkillMd": false,
+      "description": "Poker Wars starter bot in Java"
+    },
+    {
+      "name": "pokerwars-starterbot-python",
+      "path": "skills/pokerwars-starterbot-python",
+      "hasSkillMd": false,
+      "description": "Poker Wars starter bot in Python"
+    },
+    {
+      "name": "ragdoll-studio",
+      "path": "skills/ragdoll-studio",
+      "hasSkillMd": false,
+      "description": "Physics-based ragdoll animation studio"
+    },
+    {
+      "name": "ruflo",
+      "path": "skills/ruflo",
+      "hasSkillMd": true,
+      "description": "Multi-agent orchestration platform (Claude Code, Cursor, Codex, Copilot, Gemini, Amp +12 more)",
+      "linked": true
+    },
+    {
+      "name": "summer-engine-agent",
+      "path": "skills/summer-engine-agent",
+      "hasSkillMd": false,
+      "description": "Summer game engine AI agent"
+    },
+    {
+      "name": "ui-ux-pro-max-skill",
+      "path": "skills/ui-ux-pro-max-skill",
+      "hasSkillMd": false,
+      "description": "UI/UX design intelligence toolkit (styles, colors, typography, charts, UX guidelines)"
+    },
+    {
+      "name": "unity-mcp-plugin",
+      "path": "skills/unity-mcp-plugin",
+      "hasSkillMd": false,
+      "description": "Unity MCP plugin for AI agents"
+    },
+    {
+      "name": "unity-mcp-server",
+      "path": "skills/unity-mcp-server",
+      "hasSkillMd": false,
+      "description": "Unity MCP server for AI agents"
+    },
+    {
+      "name": "unreal-engine-skills-kevinpbuckley",
+      "path": "skills/unreal-engine-skills-kevinpbuckley",
+      "hasSkillMd": false,
+      "description": "Unreal Engine skills by kevinpbuckley"
+    },
+    {
+      "name": "unreal-engine-skills-quodsoler",
+      "path": "skills/unreal-engine-skills-quodsoler",
+      "hasSkillMd": false,
+      "description": "Unreal Engine skills by quodsoler"
+    },
+    {
+      "name": "web-animation-skills",
+      "path": "skills/web-animation-skills",
+      "hasSkillMd": false,
+      "description": "Web animation and interaction skills"
+    },
+    {
+      "name": "webgl-animation-skills",
+      "path": "skills/webgl-animation-skills",
+      "hasSkillMd": false,
+      "description": "WebGL animation and graphics skills"
+    },
+    {
+      "name": "wondelai-skills",
+      "path": "skills/wondelai-skills",
+      "hasSkillMd": false,
+      "description": "Wondel AI skills collection"
+    }
+  ],
+  "total": 48,
+  "withSkillMd": 5,
+  "linked": 5
+}
