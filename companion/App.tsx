@@ -59,12 +59,15 @@ export default function App() {
   const pair = async () => {
     setBusy(true); setMessage('Pairing with computer…');
     try {
+      setToken('');
+      await AsyncStorage.removeItem(STORAGE_TOKEN);
       await AsyncStorage.setItem(STORAGE_URL, endpoint);
       const body = await request('/pair', { method: 'POST', body: JSON.stringify({ code: code.trim(), mode: 'local' }) });
       setToken(body.sessionToken);
       await AsyncStorage.setItem(STORAGE_TOKEN, body.sessionToken);
+      setStatus({ ok: true, paired: true, stopped: false, mode: body.mode, hostname: 'localhost', platform: 'android', supported: body.capabilities });
       setMessage(`Connected to ${endpoint}. Session expires ${new Date(body.expiresAt).toLocaleTimeString()}.`);
-      await refresh(body.sessionToken);
+      try { await refresh(body.sessionToken); } catch { setMessage('Paired successfully. Status refresh will retry when you tap REFRESH.'); }
     } catch (error) { setMessage(error instanceof Error ? error.message : 'Pairing failed'); }
     finally { setBusy(false); }
   };
