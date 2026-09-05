@@ -15,7 +15,7 @@ const relayUrl = process.env.HERMES_RELAY_URL || '';
 function ensureState() {
   fs.mkdirSync(root, { recursive: true, mode: 0o700 });
   if (!fs.existsSync(stateFile)) {
-    saveState({ deviceId: crypto.randomUUID(), paired: false, stopped: false, allowlist: [], sessionExpiresAt: null, mode: 'local' });
+    fs.writeFileSync(stateFile, JSON.stringify({ deviceId: crypto.randomUUID(), paired: false, stopped: false, allowlist: [], sessionExpiresAt: null, mode: 'local' }, null, 2), { mode: 0o600 });
   }
 }
 function loadState() { ensureState(); return JSON.parse(fs.readFileSync(stateFile, 'utf8')); }
