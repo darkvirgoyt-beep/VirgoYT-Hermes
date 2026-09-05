@@ -1,6 +1,6 @@
 ---
 name: architecture-led-fix
-description: Architecture-aware debugging: map project structure first, then fix.
+description: Architecture-aware debugging: map structure first, then fix.
 version: 0.1.0
 author: darkvirgoyt-beep, Hermes Agent
 license: MIT
